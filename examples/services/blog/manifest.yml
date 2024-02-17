@@ -17,8 +17,8 @@ resources:
 
 # health check used to gate upgrades / readinessProbe
 health:
-  #uri: /healt1
-  port: 8081
+  uri: /health
+  port: 8080
   wait: 0
 
 # exposed Service port

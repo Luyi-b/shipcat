@@ -25,9 +25,7 @@ A [minikube](https://github.com/kubernetes/minikube) [none driver](https://minik
 sudo -E minikube start --driver=docker --kubernetes-version v1.28.3 --extra-config kubeadm.ignore-preflight-errors=SystemVerification
 kubectl config set-context --cluster=minikube --user=minikube --namespace=apps minikube
 kubectl create namespace apps
-#sudo -E minikube start --driver=hyperkit --kubernetes-version v1.28.3 --extra-config kubeadm.ignore-preflight-errors=SystemVerification
-#kubectl config set-context --cluster=minikube --user=minikube --namespace=apps minikube
-#kubectl create namespace apps
+#sudo -E minikube start --driver=none --kubernetes-version v1.28.3 --extra-config kubeadm.ignore-preflight-errors=SystemVerification
 ```
 
 ### Example 2: Kind
@@ -95,8 +93,9 @@ helm install --set postgresqlPassword=pw,postgresqlDatabase=webapp -n=webapp-pg 
 Then we can write the external `DATABASE_URL` for `webapp`:
 
 ```sh
-#vault write secret/example/webapp/DATABASE_URL value=postgres://postgres:pw#@webapp-pg-postgresql.apps/webapp
-vault write secret/example/webapp/DATABASE_URL value=postgres://postgres:{dbpassword}#@webapp.cd6g4yssob1v.ca-central-1.rds.amazonaws.com/webapp
+vault write secret/minikube/webapp/DATABASE_URL value=postgres://postgres:{dbpassword}#@webapp.cd6g4yssob1v.ca-central-1.rds.amazonaws.com/webapp
+
+vault write secret/minikube/webapp/DATABASE_PASSWORD value={dbpassword}
 ```
 
 You can verify that `shipcat` picks up on this via: `shipcat values -s webapp`.

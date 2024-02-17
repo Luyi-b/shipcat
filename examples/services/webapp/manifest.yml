@@ -19,7 +19,7 @@ controller:
 
 # health check used to gate upgrades / readinessProbe
 health:
-  #uri: /healt1
+  uri: /health
   port: 8081
   wait: 0
 
@@ -41,5 +41,5 @@ regions:
 # evars
 env:
   DATABASE_URL: IN_VAULT
+  DATABASE_PASSWORD: IN_VAULT
   NAMESPACE: apps
-

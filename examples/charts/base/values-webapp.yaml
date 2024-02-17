@@ -43,14 +43,3 @@ env:
   DATABASE_URL: IN_VAULT
   DATABASE_PASSWORD: IN_VAULT
   NAMESPACE: apps
-
-#vault:
-  #enabled: true
-  #secrets:
-    #- path: secret/minikube/webapp
-      #kvVersion: 2
-      #envVars:
-        #- name: DATABASE_URL
-          #key: database_url
-        #- name: DATABASE_PASSWORD
-          #key: database_password
