@@ -8,12 +8,6 @@ Create chart name and version as used by the chart label.
     app.kubernetes.io/name: {{ .Values.name }}
     app.kubernetes.io/version: {{ .Values.version }}
     app.kubernetes.io/managed-by: shipcat
-  ownerReferences:
-  - apiVersion: babylontech.co.uk/v1
-    kind: ShipcatManifest
-    controller: false
-    name: {{ .Values.name }}
-    uid: {{ .Values.uid }}
 {{- end }}
 
 

@@ -5,18 +5,17 @@ metadata:
   name: {{ .Values.name }}
   labels:
     app: {{ .Values.name }}
-    type: {{ .Values.type | default "service" }}
 {{- if $.Values.labels }}
 {{ toYaml $.Values.labels | indent 4 }}
 {{- end }}
 {{- template "chart.shipcatRefs" . }}
 spec:
   ports:
-  - port: 80
+  - port: 8080
     targetPort: {{ .Values.httpPort }}
     protocol: TCP
     name: http
-{{- if (.Values.health.port) and (not (eq .Values.health.port .Values.httpPort)) }}
+{{- if and .Values.health.port (not (eq .Values.health.port .Values.httpPort)) }}  
   - port: {{ .Values.health.port }}
     protocol: TCP
     name: health

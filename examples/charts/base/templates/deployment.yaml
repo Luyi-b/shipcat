@@ -4,7 +4,6 @@ metadata:
   name: {{ .Values.name }}
   labels:
     app: {{ .Values.name }}
-    type: {{ .Values.type | default "service" }}
 {{- if $.Values.labels }}
 {{ toYaml $.Values.labels | indent 4 }}
 {{- end }}
@@ -103,6 +102,10 @@ spec:
           value: {{ .Values.region }}
         - name: SERVICE_VERSION
           value: {{ .Values.version }}
+        - name: DATABASE_URL
+          value: {{ .Values.env.DATABASE_URL }}
+        - name: DATABASE_PASSWORD
+          value: {{ .Values.env.DATABASE_PASSWORD }}
 {{ if .Values.kafka }}
   {{- if .Values.kafka.mountPodIp }}
         - name: HOST_NAME

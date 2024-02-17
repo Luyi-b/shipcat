@@ -22,9 +22,12 @@ More examples in the `Makefile`.
 A [minikube](https://github.com/kubernetes/minikube) [none driver](https://minikube.sigs.k8s.io/docs/reference/drivers/none/), running in the `apps` namespace:
 
 ```sh
-sudo -E minikube start --driver=none --kubernetes-version v1.15.8 --extra-config kubeadm.ignore-preflight-errors=SystemVerification
+sudo -E minikube start --driver=docker --kubernetes-version v1.28.3 --extra-config kubeadm.ignore-preflight-errors=SystemVerification
 kubectl config set-context --cluster=minikube --user=minikube --namespace=apps minikube
 kubectl create namespace apps
+#sudo -E minikube start --driver=hyperkit --kubernetes-version v1.28.3 --extra-config kubeadm.ignore-preflight-errors=SystemVerification
+#kubectl config set-context --cluster=minikube --user=minikube --namespace=apps minikube
+#kubectl create namespace apps
 ```
 
 ### Example 2: Kind
@@ -76,23 +79,24 @@ Secrets are resolved from `vault`, so let's install a sample backend using `dock
 
 ```sh
 docker run --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' -p 8200:8200 -d --rm --name vault vault:0.11.3
-export VAULT_ADDR=http://127.0.0.1:8200
+#export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_ADDR=http://localhost:8200
 export VAULT_TOKEN=myroot
 vault secrets disable secret
 vault secrets enable -version=1 -path=secret kv
 ```
-
+http://localhost:8200/ui/vault/auth?with=token
 ## Install a database
 The `webapp` service relies on having a database. If you want to supply your own working `DATABASE_URL` in vault further down, you can do so yourself. Here is how to do it with [helm 3](https://github.com/helm/helm/releases):
 
 ```sh
 helm install --set postgresqlPassword=pw,postgresqlDatabase=webapp -n=webapp-pg stable/postgresql
 ```
-
 Then we can write the external `DATABASE_URL` for `webapp`:
 
 ```sh
-vault write secret/example/webapp/DATABASE_URL value=postgres://postgres:pw@webapp-pg-postgresql.apps/webapp
+#vault write secret/example/webapp/DATABASE_URL value=postgres://postgres:pw#@webapp-pg-postgresql.apps/webapp
+vault write secret/example/webapp/DATABASE_URL value=postgres://postgres:{dbpassword}#@webapp.cd6g4yssob1v.ca-central-1.rds.amazonaws.com/webapp
 ```
 
 You can verify that `shipcat` picks up on this via: `shipcat values -s webapp`.
@@ -108,7 +112,7 @@ export SLACK_SHIPCAT_CHANNEL=#test
 If these are unset, then there are still upgrade results visible on the status object:
 
 ```sh
-kubectl get sm blog -oyaml | yq ".status" -y
+kubectl get sm blog -o yaml | yq ".status" -y
 ```
 
 ## Cluster reconcile
